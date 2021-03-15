@@ -9,6 +9,8 @@ django = "*"
 djangorestframework = "*"
 mysqlclient = "*"
 pillow = "*"
+drf-yasg = "*"
+django-allauth = "*"
 
 [dev-packages]
 
