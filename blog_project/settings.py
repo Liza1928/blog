@@ -44,8 +44,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crequest',
 
-    'blog'
+    'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +136,7 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': [
-        "rest_framework.permissions.IsAuthenticated",
+        'rest_framework.permissions.IsAuthenticated',
         # добавить в .env или раскомментить для тестов для доступа без токена
         # 'rest_framework.permissions.AllowAny',
     ],
@@ -162,7 +164,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 SITE_ID = 1
 
-AUTH_USER_MODEL = "blog.User"
+AUTH_USER_MODEL = "users.User"
 
 
 # Static files (CSS, JavaScript, Images)

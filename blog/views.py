@@ -1,4 +1,4 @@
-from helpers.access import AccessEdit, IsSuperUser
+from helpers.access import AccessEditAuthor, IsSuperUser
 from .models import Post
 from .serializers import PostWriteSerializer, PostReadSerializer
 from helpers.views import ReadWriteModelViewSet
@@ -10,5 +10,5 @@ class PostViewSet(ReadWriteModelViewSet):
     serializer_class_in = PostWriteSerializer
     serializer_class_out = PostReadSerializer
     serializer_class = serializer_class_out
-    permission_classes = [IsSuperUser | AccessEdit]
+    permission_classes = [IsSuperUser | AccessEditAuthor]
 

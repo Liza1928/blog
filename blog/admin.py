@@ -1,10 +1,5 @@
 from django.contrib import admin
-from .models import Post, Author, Category, User
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    pass
+from .models import Post, Author, Category
 
 
 @admin.register(Post)
