@@ -1,22 +1,10 @@
 from django.db import models
 
 from helpers.models import BaseModel
-from users.models import User
 
 
 def upload_to_images(instance, filename):
     return f'blog_images/{instance.id}/{filename}'
-
-
-class Author(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    profile_picture = models.ImageField()
-    name = models.CharField(  # noqa: DJ01
-        "name", max_length=200, null=True, blank=True, db_index=True
-    )
-
-    def __str__(self):
-        return self.name
 
 
 class Category(BaseModel):
@@ -39,7 +27,7 @@ class Post(BaseModel):
     )
     text = models.TextField('Текст поста', null=True, blank=True)
     categories = models.ManyToManyField(Category)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey("users.User", on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
