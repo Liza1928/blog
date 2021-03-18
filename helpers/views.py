@@ -2,7 +2,6 @@ from typing import Any
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
 
 from helpers.serializers import EmptySchema
 
@@ -11,16 +10,27 @@ class ReadWriteModelViewSet(viewsets.ModelViewSet):
     """ModelViewSet с двумя сериализаторами - на чтение и на запись"""
 
     serializer_class_in = EmptySchema
-    serializer_class_out: Any = EmptySchema
+    serializer_class_out = EmptySchema
 
-    @swagger_auto_schema(responses={200: serializer_class_out()})
+    def __init__(self, serializer_class_in=None, serializer_class_out=None, *args,
+                 **kwargs):
+        super().__init__(**kwargs)
+        self.serializer_class = serializer_class_in
+        self.serializer_class_in = serializer_class_in
+        self.serializer_class_out = serializer_class_out
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return self.serializer_class_out
+        else:
+            return self.serializer_class_in
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.serializer_class_out(
             instance=instance, context={'request': request})
         return Response(serializer.data)
 
-    @swagger_auto_schema(responses={200: serializer_class_out(many=True)})
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         try:
@@ -39,20 +49,14 @@ class ReadWriteModelViewSet(viewsets.ModelViewSet):
             instance=queryset, context={'request': request}, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-      request=serializer_class_in, responses={200: serializer_class_out}
-    )
     def create(self, request, *args, **kwargs):
         serializer_in = self.serializer_class_in(data=request.data)
         serializer_in.is_valid(raise_exception=True)
-        walk = serializer_in.save()
+        obj = serializer_in.save()
         serializer_out = self.serializer_class_out(
-            instance=walk, context={'request': request})
+            instance=obj, context={'request': request})
         return Response(serializer_out.data, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
-      request=serializer_class_in, responses={200: serializer_class_out()}
-    )
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()

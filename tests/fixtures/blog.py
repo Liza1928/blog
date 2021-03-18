@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from crequest.middleware import CrequestMiddleware
 
-from blog.models import Post, Category, Author
+from blog.models import Category
 
 
 User = get_user_model()
