@@ -19,11 +19,6 @@ class RequestMock:
         self.data = data
 
 
-class MockAuthor:
-    def __init__(self, user):
-        self.user = user
-
-
 class MockPost:
     author = None
 
@@ -57,8 +52,7 @@ class TestAccessEditAuthor:
     author_user = UserMock(is_authenticated=True, is_author=True)
     super_user = UserMock(is_superuser=True)
     user_to_access_not_your_post = UserMock(id=2, is_authenticated=True, is_author=True)
-    author = MockAuthor(user=author_user)
-    post = MockPost(author=author)
+    post = MockPost(author=author_user)
 
     # AccessEdit
     def test_access_edit_get_not_authenticated(self):
