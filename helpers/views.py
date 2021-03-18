@@ -1,29 +1,19 @@
-from typing import Any
-
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-
-from helpers.serializers import EmptySchema
 
 
 class ReadWriteModelViewSet(viewsets.ModelViewSet):
     """ModelViewSet с двумя сериализаторами - на чтение и на запись"""
 
-    serializer_class_in = EmptySchema
-    serializer_class_out = EmptySchema
-
-    def __init__(self, serializer_class_in=None, serializer_class_out=None, *args,
-                 **kwargs):
-        super().__init__(**kwargs)
-        self.serializer_class = serializer_class_in
-        self.serializer_class_in = serializer_class_in
-        self.serializer_class_out = serializer_class_out
+    serializer_class_in = None
+    serializer_class_out = None
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return self.serializer_class_out
+        elif self.serializer_class_in: return self.serializer_class_in
         else:
-            return self.serializer_class_in
+            return self.serializer_class
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
