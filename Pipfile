@@ -13,6 +13,7 @@ drf-yasg = "*"
 django-crequest = "*"
 django-allauth = "==0.44.0"
 requests-mock = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 pytest = "*"

@@ -1,5 +1,7 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django.utils.decorators import method_decorator
 
 
 class ReadWriteModelViewSet(viewsets.ModelViewSet):
@@ -8,10 +10,18 @@ class ReadWriteModelViewSet(viewsets.ModelViewSet):
     serializer_class_in = None
     serializer_class_out = None
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ниже представлен вариант явного декорирования
+        # decorator = swagger_auto_schema(responses={500: self.serializer_class_in(many=True)})
+        # decorator = method_decorator(decorator, 'decorator')
+        # self.retrieve = decorator(self.retrieve)
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return self.serializer_class_out
-        elif self.serializer_class_in: return self.serializer_class_in
+        elif self.serializer_class_in:
+            return self.serializer_class_in
         else:
             return self.serializer_class
 
@@ -50,7 +60,7 @@ class ReadWriteModelViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer_in = self.serializer_class_in(
+        serializer_in = self.serializer_class_out(
             instance, data=request.data, partial=partial)
         serializer_in.is_valid(raise_exception=True)
         self.perform_update(serializer_in)
