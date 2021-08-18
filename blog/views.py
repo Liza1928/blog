@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from helpers.access import AccessEditAuthor, IsSuperUser, ReadOnly
+from helpers.swagger_decorator import swagger_auto_viewset
 from .models import Post, Category
 from users.models import User
 from .serializers import (
@@ -11,25 +12,28 @@ from .serializers import (
     AuthorReadSerializer,
 )
 
-from helpers.views import ReadWriteModelViewSet
+from drf_rw_serializers import viewsets
 
 
-class PostViewSet(ReadWriteModelViewSet):
+@swagger_auto_viewset
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class_out = PostReadSerializer
-    serializer_class_in = PostWriteSerializer
-    serializer_class = serializer_class_out
+    read_serializer_class  = PostReadSerializer
+    write_serializer_class  = PostWriteSerializer
+    serializer_class = read_serializer_class
     permission_classes = [IsSuperUser | AccessEditAuthor]
 
 
-class CategoryViewSet(ReadWriteModelViewSet):
+@swagger_auto_viewset
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class_out = CategoryReadSerializer
-    serializer_class_in = CategoryWriteSerializer
-    serializer_class = serializer_class_out
+    read_serializer_class  = CategoryReadSerializer
+    write_serializer_class  = CategoryWriteSerializer
+    serializer_class = read_serializer_class
     permission_classes = [IsSuperUser | ReadOnly]
 
 
+@swagger_auto_viewset
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.get_author_queryset()
     serializer_class = AuthorReadSerializer

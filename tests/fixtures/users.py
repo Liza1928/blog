@@ -1,4 +1,4 @@
-from helpers.views import social_authorization_status
+from helpers.swagger_decorator import social_authorization_status
 
 
 class RequestMock:
